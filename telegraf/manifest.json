@@ -6,9 +6,9 @@
     "Jeffrey Smith <jsmith@influxdata.com> (@jeffreyssmith2nd)"
   ],
   "versions": [
-    "1.37",
     "1.38",
-    "1.39"
+    "1.39",
+    "1.40"
   ],
   "architectures": [
     "amd64",

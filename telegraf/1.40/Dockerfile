@@ -1,7 +1,7 @@
 FROM buildpack-deps:bookworm-curl
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends iputils-ping snmp procps lm-sensors libcap2-bin && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends iputils-ping snmp procps lm-sensors libcap2-bin tini && \
     rm -rf /var/lib/apt/lists/*
 
 RUN set -ex && \
@@ -13,7 +13,7 @@ RUN set -ex && \
         gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys "$key" ; \
     done
 
-ENV TELEGRAF_VERSION 1.37.3
+ENV TELEGRAF_VERSION 1.40.0
 RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" && \
     case "${dpkgArch##*-}" in \
       amd64) ARCH='amd64';; \
@@ -31,5 +31,5 @@ RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" && \
 EXPOSE 8125/udp 8092/udp 8094
 
 COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/tini", "--", "/entrypoint.sh"]
 CMD ["telegraf"]
